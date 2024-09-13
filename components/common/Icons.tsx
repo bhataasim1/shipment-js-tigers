@@ -300,4 +300,36 @@ export const Icons = {
       />
     </svg>
   ),
+
+  forwardIcon: ({ fill = "#616C76", ...props }: { fill?: string }) => (
+    <svg
+      width="11"
+      height="18"
+      viewBox="0 0 11 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M1.99994 0.000244927L10.9999 9.00024L1.99994 18.0002L0.402438 16.4027L7.80494 9.00024L0.402437 1.59774L1.99994 0.000244927Z"
+        fill={fill}
+      />
+    </svg>
+  ),
+
+  backIcon: ({ fill = "#616C76", ...props }: { fill?: string }) => (
+    <svg
+      width="12"
+      height="18"
+      viewBox="0 0 12 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M9.80493 18.0002L0.80493 9.00024L9.80493 0.000245714L11.4024 1.59775L3.99993 9.00024L11.4024 16.4027L9.80493 18.0002Z"
+        fill={fill}
+      />
+    </svg>
+  ),
 };
