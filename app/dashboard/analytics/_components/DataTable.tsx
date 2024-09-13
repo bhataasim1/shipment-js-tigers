@@ -1,3 +1,6 @@
+"use client";
+
+import { Icons } from "@/components/common/Icons";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -6,47 +9,83 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
-const data = [
-  {
-    hbl: "EOGZK23090310",
-    mbl: "ZIMU3H31548831",
-    pof: "POF MT506214",
-    recipt: "YANTIAN, CHINA Jun 10, 2023",
-    loading: "YANTIAN, CHINA Jun 10, 2023",
-    discharge: "YANTIAN, CHINA Jun 15, 2023",
-    delivery: "HOUSTON, TX, USA Jul 11, 2023",
-    booking: "BROWNSVILLE, TX, USA Jul 11, 2023",
-    sizeType: "40HC",
-    carrier: "ZIM",
-    commodity: "FURNITURE",
-    milestone: "BOOKED",
-    milestoneGroup: "BOOKED",
-  },
+export interface IShipment {
+  hblNo: string;
+  mblNo: string;
+  poRefNo: string;
+  recipt: string;
+  loading: string;
+  discharge: string;
+  delivery: string;
+  bookingNo: string;
+  sizeType: string;
+  carrier: string;
+  commodity: string;
+  milestone: string;
+  milestoneGroup: string;
+}
+
+const shipmentHeading = [
+  "HBL#",
+  "MBL#",
+  "POF / REF#",
+  "Recipt",
+  "Loading",
+  "Discharge",
+  "Delivery",
+  "Booking#",
+  "Size/Type",
+  "Carrier",
+  "Commodity",
+  "Milestone",
+  "Milestone Group",
 ];
 
 const DataTable = () => {
+  const [shipments, setShipments] = useState<IShipment[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const getAllShipments = async () => {
+    try {
+      const response = await fetch("/api/shipments");
+      const data = await response.json();
+      setShipments(data.shipment);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllShipments();
+  }, []);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentShipments = shipments.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(shipments.length / itemsPerPage);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(parseInt(value, 10));
+    setCurrentPage(1);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              {[
-                "HBL#",
-                "MBL#",
-                "POF / REF#",
-                "Recipt",
-                "Loading",
-                "Discharge",
-                "Delivery",
-                "Booking#",
-                "Size/Type",
-                "Carrier",
-                "Commodity",
-                "Milestone",
-                "Milestone Group",
-              ].map((header) => (
+              {shipmentHeading.map((header) => (
                 <th
                   key={header}
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -57,16 +96,16 @@ const DataTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((row, index) => (
+            {currentShipments.map((row, index) => (
               <tr key={index}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {row.hbl}
+                  {row.hblNo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {row.mbl}
+                  {row.mblNo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {row.pof}
+                  {row.poRefNo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {row.recipt}
@@ -81,7 +120,7 @@ const DataTable = () => {
                   {row.delivery}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {row.booking}
+                  {row.bookingNo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {row.sizeType}
@@ -105,25 +144,43 @@ const DataTable = () => {
       </div>
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Select>
+          <Select onValueChange={handleItemsPerPageChange}>
             <SelectTrigger className="w-[70px]">
-              <SelectValue placeholder={"10"} />
+              <SelectValue placeholder={itemsPerPage.toString()} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="5">5</SelectItem>
               <SelectItem value="10">10</SelectItem>
               <SelectItem value="20">20</SelectItem>
               <SelectItem value="50">50</SelectItem>
             </SelectContent>
           </Select>
-          <span className="ml-2 text-gray-400">1-10 of 100</span>
+          <span className="ml-2 text-gray-400">
+            {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, shipments.length)}{" "}
+            of {shipments.length}
+          </span>
         </div>
         <div className="flex items-center space-x-2">
-          <Button size={"icon"} variant={"outline"}>
-            &lt;
+          <Button
+            size={"icon"}
+            variant={"ghost"}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <Icons.backIcon fill={!indexOfFirstItem ? "#D9D9D9" : "#616C76"} />
           </Button>
-          <span>1-10 of 100</span>
-          <Button size={"icon"} variant={"outline"}>
-            &gt;
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            size={"icon"}
+            variant={"ghost"}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <Icons.forwardIcon
+              fill={!indexOfLastItem ? "#D9D9D9" : "#616C76"}
+            />
           </Button>
         </div>
       </div>
