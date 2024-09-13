@@ -65,10 +65,7 @@ const PiChartComponent = () => {
               : "text-gray-500"
           }`}
         >
-          <Icons.shipIcons
-            fill={activeTab === "Sea" ? "#EB5D50" : "#969596"}
-  
-          />
+          <Icons.shipIcons fill={activeTab === "Sea" ? "#EB5D50" : "#969596"} />
           Sea
         </button>
 
