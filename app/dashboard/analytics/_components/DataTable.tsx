@@ -9,7 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
 export interface IShipment {
   hblNo: string;
@@ -28,19 +30,19 @@ export interface IShipment {
 }
 
 const shipmentHeading = [
-  "HBL#",
-  "MBL#",
-  "POF / REF#",
-  "Recipt",
-  "Loading",
-  "Discharge",
-  "Delivery",
-  "Booking#",
-  "Size/Type",
-  "Carrier",
-  "Commodity",
-  "Milestone",
-  "Milestone Group",
+  { label: "HBL#", key: "hblNo" },
+  { label: "MBL#", key: "mblNo" },
+  { label: "POF / REF#", key: "poRefNo" },
+  { label: "Recipt", key: "recipt" },
+  { label: "Loading", key: "loading" },
+  { label: "Discharge", key: "discharge" },
+  { label: "Delivery", key: "delivery" },
+  { label: "Booking#", key: "bookingNo" },
+  { label: "Size/Type", key: "sizeType" },
+  { label: "Carrier", key: "carrier" },
+  { label: "Commodity", key: "commodity" },
+  { label: "Milestone", key: "milestone" },
+  { label: "Milestone Group", key: "milestoneGroup" },
 ];
 
 const DataTable = () => {
@@ -81,16 +83,27 @@ const DataTable = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
+      <div className="flex m-2 justify-end">
+        <CSVLink
+          data={shipments}
+          headers={shipmentHeading}
+          filename={"shipments_data.csv"}
+          className="text-white text-sm font-medium flex gap-2 bg-[#EB5D50] hover:bg-[#842d25] p-2 rounded-xl"
+        >
+          <Download size={20} />
+          Download
+        </CSVLink>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               {shipmentHeading.map((header) => (
                 <th
-                  key={header}
+                  key={header.label}
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  {header}
+                  {header.label}
                 </th>
               ))}
             </tr>
