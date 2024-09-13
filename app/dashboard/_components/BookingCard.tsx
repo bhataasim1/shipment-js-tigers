@@ -26,7 +26,7 @@ export default function BookingCard() {
     try {
       const response = await fetch("/api/shipments");
       const data = await response.json();
-      setShipments(data.shipment);
+      setShipments(data?.shipment);
     } catch (error) {
       console.error(error);
     }
@@ -37,12 +37,12 @@ export default function BookingCard() {
   }, []);
 
   useEffect(() => {
-    const total = shipments.length;
-    const utilized = shipments.filter(
-      (shipment) => shipment.bookingStatus === "UTILIZED"
+    const total = shipments?.length;
+    const utilized = shipments?.filter(
+      (shipment) => shipment?.bookingStatus === "UTILIZED"
     ).length;
-    const cancelled = shipments.filter(
-      (shipment) => shipment.bookingStatus === "CANCELLED"
+    const cancelled = shipments?.filter(
+      (shipment) => shipment?.bookingStatus === "CANCELLED"
     ).length;
 
     const utilizationPercentage =
