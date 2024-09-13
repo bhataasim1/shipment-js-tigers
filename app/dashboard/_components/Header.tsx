@@ -1,11 +1,17 @@
+"use client";
+
 import { BellIcon } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const path = usePathname();
   return (
     <nav className="bg-gray-200 shadow-sm p-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold">
+          {path === "/dashboard" ? "Dashboard" : "Analytics"}
+        </h1>
         <div className="flex items-center space-x-4">
           <div className="relative">
             <button className="p-2 rounded-full relative">
