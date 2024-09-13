@@ -3,9 +3,18 @@ import TransportNavComponent from "./_components/TransportNavComponent";
 import FilterComponent from "./_components/FilterComponent";
 import MilestonesCard from "./_components/MileStoneCard";
 import TimeLineCard from "./_components/TimeLineCard";
-import { stages } from "./constant/shippingData";
+// import { stages } from "./constant/shippingData";
 import ShippingStageCard from "./_components/ShippingStageCard";
-import DataTable from "./_components/DataTable";
+import DataTable, { IShipment } from "./_components/DataTable";
+
+const stages = [
+  { title: "Loading", field: "loading" },
+  { title: "Discharge", field: "discharge" },
+  { title: "Delivery", field: "delivery" },
+  { title: "Shipper", field: "shipper" },
+  { title: "Consignee", field: "consignee" },
+  { title: "Carrier", field: "carrier" },
+];
 
 const AnalyticsPage = () => {
   return (
@@ -21,7 +30,7 @@ const AnalyticsPage = () => {
           <ShippingStageCard
             key={index}
             title={stage.title}
-            locations={stage.locations}
+            field={stage.field as keyof IShipment}
           />
         ))}
       </div>
