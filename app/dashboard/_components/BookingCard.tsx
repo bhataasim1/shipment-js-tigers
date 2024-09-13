@@ -1,4 +1,8 @@
+"use client";
+
 import { Icons } from "@/components/common/Icons";
+import { useEffect, useState } from "react";
+import { IShipment } from "../analytics/_components/DataTable";
 
 interface StatType {
   title: string;
@@ -7,29 +11,71 @@ interface StatType {
   color: string;
 }
 
+interface IBooking extends IShipment {
+  bookingStatus: string;
+}
+
 export default function BookingCard() {
+  const [shipments, setShipments] = useState<IBooking[]>([]);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [utilizedBookings, setUtilizedBookings] = useState(0);
+  const [cancelledBookings, setCancelledBookings] = useState(0);
+  const [utilization, setUtilization] = useState("0%");
+
+  const getAllShipments = async () => {
+    try {
+      const response = await fetch("/api/shipments");
+      const data = await response.json();
+      setShipments(data.shipment);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllShipments();
+  }, []);
+
+  useEffect(() => {
+    const total = shipments.length;
+    const utilized = shipments.filter(
+      (shipment) => shipment.bookingStatus === "UTILIZED"
+    ).length;
+    const cancelled = shipments.filter(
+      (shipment) => shipment.bookingStatus === "CANCELLED"
+    ).length;
+
+    const utilizationPercentage =
+      total > 0 ? ((utilized / total) * 100).toFixed(2) : "0";
+
+    setTotalBookings(total);
+    setUtilizedBookings(utilized);
+    setCancelledBookings(cancelled);
+    setUtilization(`${utilizationPercentage}%`);
+  }, [shipments]);
+
   const stats: StatType[] = [
     {
       title: "Total Bookings",
-      value: "501 Bookings",
+      value: `${totalBookings} Bookings`,
       icon: <Icons.bookingsIcon className="w-6 h-6" />,
       color: "bg-red-900",
     },
     {
       title: "Bookings Utilized",
-      value: "501 Bookings",
+      value: `${utilizedBookings} Bookings`,
       icon: <Icons.bookingsIcon2 className="w-6 h-6" />,
       color: "bg-orange-400",
     },
     {
       title: "Booking Cancelled",
-      value: "0 Bookings",
+      value: `${cancelledBookings} Bookings`,
       icon: <Icons.blockIcon className="w-6 h-6" />,
       color: "bg-red-500",
     },
     {
       title: "Utilization",
-      value: "100%",
+      value: utilization,
       icon: <Icons.clockLoaderIcon className="w-6 h-6" />,
       color: "bg-green-500",
     },
