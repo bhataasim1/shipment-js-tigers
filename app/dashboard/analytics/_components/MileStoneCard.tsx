@@ -22,7 +22,7 @@ export default function MilestonesCard() {
     }
   };
 
-  console.log(shipments);
+  // console.log(shipments);
 
   const aggregateMilestones = (shipments: IShipment[]) => {
     const milestoneCounts: Record<string, number> = {};
