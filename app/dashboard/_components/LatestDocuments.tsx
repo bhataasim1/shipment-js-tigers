@@ -35,7 +35,7 @@ const LatestDocuments = () => {
       <h2 className="text-lg font-semibold mb-4">Latest Documents</h2>
 
       <ul className="space-y-3 h-64 overflow-y-auto">
-        {documents.map((doc) => {
+        {documents && documents?.map((doc) => {
           const { date, time } = formatDate(doc.updatedAt);
           return (
             <li
