@@ -3,7 +3,6 @@ import TransportNavComponent from "./_components/TransportNavComponent";
 import FilterComponent from "./_components/FilterComponent";
 import MilestonesCard from "./_components/MileStoneCard";
 import TimeLineCard from "./_components/TimeLineCard";
-// import { stages } from "./constant/shippingData";
 import ShippingStageCard from "./_components/ShippingStageCard";
 import DataTable, { IShipment } from "./_components/DataTable";
 
