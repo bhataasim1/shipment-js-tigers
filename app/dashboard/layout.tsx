@@ -8,7 +8,7 @@ const layout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <div className="bg-gray-200">
+    <div>
       <div className="md:w-64 hidden md:block">
         <Sidebar />
       </div>
