@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import TransportNavComponent from "./_components/TransportNavComponent";
 import FilterComponent from "./_components/FilterComponent";
 import MilestonesCard from "./_components/MileStoneCard";
@@ -16,6 +18,25 @@ const stages = [
 ];
 
 const AnalyticsPage = () => {
+  const [shipments, setShipments] = useState<IShipment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getAllShipments = async () => {
+    try {
+      const response = await fetch("/api/shipments");
+      const data = await response.json();
+      setShipments(data.shipment);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllShipments();
+  }, []);
+
   return (
     <div className="space-y-3">
       <TransportNavComponent />
@@ -30,10 +51,12 @@ const AnalyticsPage = () => {
             key={index}
             title={stage.title}
             field={stage.field as keyof IShipment}
+            shipments={shipments}
+            loading={loading}
           />
         ))}
       </div>
-      <DataTable />
+      <DataTable shipments={shipments} loading={loading} />
     </div>
   );
 };
