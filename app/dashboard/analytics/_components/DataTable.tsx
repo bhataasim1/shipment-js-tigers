@@ -1,6 +1,7 @@
 "use client";
 
 import { Icons } from "@/components/common/Icons";
+import LoadingEffect from "@/components/common/LoadingEffect";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Download } from "lucide-react";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { CSVLink } from "react-csv";
 
 export interface IShipment {
@@ -45,24 +46,14 @@ const shipmentHeading = [
   { label: "Milestone Group", key: "milestoneGroup" },
 ];
 
-const DataTable = () => {
-  const [shipments, setShipments] = useState<IShipment[]>([]);
+type DataTableProps = {
+  shipments: IShipment[];
+  loading: boolean;
+};
+
+const DataTable = ({shipments, loading}: DataTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const getAllShipments = async () => {
-    try {
-      const response = await fetch("/api/shipments");
-      const data = await response.json();
-      setShipments(data.shipment);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    getAllShipments();
-  }, []);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -80,6 +71,11 @@ const DataTable = () => {
     setItemsPerPage(parseInt(value, 10));
     setCurrentPage(1);
   };
+
+  if(loading) {
+    return (
+      <LoadingEffect totalNumber={1} loadingLines={7} />
+    )};
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
